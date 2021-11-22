@@ -45,13 +45,27 @@ def DespectroangularF(delta,delta_f,U,N,lamda,z):
     return U_z
     
     
-def Despectroangular(U,z,lamda,deltau,deltav):
-    Uz=(1/(1j*lamda))*np.fft.fft2(U*deltau*deltav)
-    Uz=np.fft.fftshift(Uz)
+def Despectroangular(U,z,lamda,dx_f,dy_f):
     
-    Uz=Uz*np.exp(1j*z*(2*np.pi/lamda)*((1- (deltau**2 +deltav**2))**0.5))
+    Uz=np.fft.fftshift(np.fft.fftn(U))
     
-    Uz=np.fft.ifft2(Uz)
+    N,M=np.shape(U)
+    
+    x=np.arange(-int(M/2),int(M/2),1)
+    y=np.arange(-int(N/2),int(N/2),1)
+    X,Y=np.meshgrid(x,y)
+    
+    fx=X*(1/(M*dx_f))
+    fy=Y*(1/(N*dy_f))
+    
+    k=2*np.pi/lamda
+    
+    Prop=np.exp(1j*z*(k)*((1 -(fx**2 +fy**2))**0.5)) 
+    
+    Uz=Uz*Prop
+    
+    Uz=np.fft.ifftn(Uz)
+    
     
     return Uz
     
@@ -60,8 +74,10 @@ def Despectroangular(U,z,lamda,deltau,deltav):
 
 
 
-image=cv2.imread("cameraman.png",0)
+image=cv2.imread("totoro.png",0)
 
+
+#All units in micrometers
 N=256
 lamda=0.633
 deltaxprim=2.5 
@@ -69,12 +85,12 @@ deltayprim=2.5
 
 
 
-#Constrains of pixel sizes do to the Fourier transform discretization
-deltau=(lamda)/(2*N*deltaxprim) 
-deltav=(lamda)/(2*N*deltayprim)
 
 
-plt.imshow(np.abs(Despectroangular(image,10000*lamda,lamda,deltau,deltav))**2)
+
+
+
+plt.imshow(np.abs(Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim))**2)
 plt.show()
 
 
