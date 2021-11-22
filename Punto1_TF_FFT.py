@@ -40,10 +40,10 @@ def Fresnel(Uin, w_l, dx0, z):
 "-----Physical array-----"
         
 w_l=633          #(633nm orange/red) #All units in um
-dx0=2000
+dx0=2000        #2um
 N=M=int(512/2)
 #z=1*N*(dx0**2)/w_l  #Condition of z in FT
-z=2500000
+z=32*1e5   #3.2 mm
 U_0=cv2.imread('cameraman.png',0)
 
 "-----PADDING-----" #If needed 
