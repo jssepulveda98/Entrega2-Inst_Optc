@@ -14,26 +14,26 @@ def DespectroangularF(U,z,lamda,delta):
     n=np.arange(-int(q/2),int(q/2),1)
     m=np.arange(-int(p/2),int(p/2),1)
     
-    P,Q=np.meshgrid(n,m)
+    
     N,M=np.meshgrid(n,m)
     
     delta_f=1/(Mue*delta)
     
     k=2*np.pi/lamda
     
-    for i in np.arange(len(P)):
-        for j in np.arange(len(Q)):
+    for i in np.arange(len(N)):
+        for j in np.arange(len(M)):
             A[i,j]=(delta**2)*np.sum(U*np.exp(-1j*(2*np.pi/Mue)*(i*N+j*M)))
             
             
     A=np.fft.fftshift(A)
     
-    Az=A*np.exp(1j*z*k*((1 - ((lamda*delta_f)**2) *(P**2  +Q**2))**0.5))
+    Az=A*np.exp(1j*z*k*((1 - ((lamda*delta_f)**2) *(N**2  +M**2))**0.5))
     
     
     Uz=np.zeros(np.shape(U),dtype=np.complex64)
-    for i in np.arange(len(P)):
-        for j in np.arange(len(Q)):
+    for i in np.arange(len(N)):
+        for j in np.arange(len(M)):
             Uz[i,j]=(delta_f**2)*np.sum(Az*np.exp(1j*(2*np.pi/Mue)*(i*N+j*M)))
             
     Uz=np.fft.fftshift(Uz)
@@ -89,11 +89,16 @@ deltayprim=2.5
 
 #Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim)
 
+I1=np.abs(Despectroangular(image,100*lamda,lamda,deltaxprim,deltayprim))**2
+I2=np.abs(DespectroangularF(image,250*lamda,lamda,deltaxprim))**2
 
-#plt.figure()
-#plt.imshow(np.abs(Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim))**2,cmap="gray")
+
 plt.figure()
-plt.imshow(np.abs(DespectroangularF(image,2000*lamda,lamda,deltaxprim))**2,cmap="gray")
+plt.imshow(I1,cmap="gray")
+plt.figure()
+plt.imshow(I2,cmap="gray")
+plt.figure()
+plt.imshow(np.abs(I1-I2),cmap="gray")
 plt.show()
 
 
