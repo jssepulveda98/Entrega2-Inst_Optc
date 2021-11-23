@@ -4,50 +4,48 @@ import cv2
 
 #Functions
 
-def Sum(U,N,p,q,phase):
-    
-    x,y=np.shape(U)[0],np.shape(U)[1]
-    sumx=0
-    
-    for m in np.arange(x):
-        for n in np.arange(y):
-            sumx+=U[n,m]*np.exp(phase*(2*np.pi/N)*(p*n +q*m))
-            
-    
-    return sumx
 
-
-def DespectroangularF(delta,delta_f,U,N,lamda,z):
+def DespectroangularF(U,z,lamda,delta):
     
-    A=np.zeros(np.shape(U))
-    P,Q=np.shape(A)[0],np.shape(A)[1]
+    A=np.zeros(np.shape(U),dtype=np.complex64)
+    Mue=np.shape(A)[0]
+    p,q=np.shape(A)
     
-    for p in np.arange(P):
-        for q in np.arange(Q):
-            
-            A[p,q]=(delta**2)*Sum(U,N,p,q,-1j)
-            
-    A_z=np.zeros(np.shape(U))
+    n=np.arange(-int(q/2),int(q/2),1)
+    m=np.arange(-int(p/2),int(p/2),1)
     
-    for p in np.arange(P):
-        for q in np.arange(Q):
-            
-            A_z[p,q]=A[p,q]*np.exp(1j*z*(2*np.pi/lamda)*((1- ((lamda*delta_f)**2)*(p**2 +q**2))**0.5))
-            
-    U_z=np.zeros(np.shape(U))
+    P,Q=np.meshgrid(n,m)
+    N,M=np.meshgrid(n,m)
     
-    for p in np.arange(P):
-        for q in np.arange(Q):
-            
-            U_z[p,q]=(delta_f**2)*Sum(A_z,N,p,q,1j)
-            
+    delta_f=1/(Mue*delta)
     
-    return U_z
+    k=2*np.pi/lamda
+    
+    for i in np.arange(len(P)):
+        for j in np.arange(len(Q)):
+            A[i,j]=(delta**2)*np.sum(U*np.exp(-1j*(2*np.pi/Mue)*(i*N+j*M)))
+            
+            
+    A=np.fft.fftshift(A)
+    
+    Az=A*np.exp(1j*z*k*((1 - ((lamda*delta_f)**2) *(P**2  +Q**2))**0.5))
+    
+    
+    Uz=np.zeros(np.shape(U),dtype=np.complex64)
+    for i in np.arange(len(P)):
+        for j in np.arange(len(Q)):
+            Uz[i,j]=(delta_f**2)*np.sum(Az*np.exp(1j*(2*np.pi/Mue)*(i*N+j*M)))
+            
+    Uz=np.fft.fftshift(Uz)
+    
+    
+    return Uz
     
     
 def Despectroangular(U,z,lamda,dx_f,dy_f):
     
     Uz=np.fft.fftshift(np.fft.fftn(U))
+    
     
     N,M=np.shape(U)
     
@@ -64,9 +62,10 @@ def Despectroangular(U,z,lamda,dx_f,dy_f):
     
     Uz=Uz*Prop
     
+        
     Uz=np.fft.ifftn(Uz)
     
-    
+        
     return Uz
     
     
@@ -78,7 +77,7 @@ image=cv2.imread("totoro.png",0)
 
 
 #All units in micrometers
-N=256
+
 lamda=0.633
 deltaxprim=2.5 
 deltayprim=2.5
@@ -88,9 +87,13 @@ deltayprim=2.5
 
 
 
+#Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim)
 
 
-plt.imshow(np.abs(Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim))**2)
+plt.figure()
+plt.imshow(np.abs(Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim))**2,cmap="gray")
+plt.figure()
+plt.imshow(np.abs(DespectroangularF(image,1000*lamda,lamda,deltaxprim))**2,cmap="gray")
 plt.show()
 
 
