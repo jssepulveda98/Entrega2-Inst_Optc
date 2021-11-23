@@ -90,7 +90,7 @@ deltayprim=2.5
 #Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim)
 
 I1=np.abs(Despectroangular(image,100*lamda,lamda,deltaxprim,deltayprim))**2
-I2=np.abs(DespectroangularF(image,250*lamda,lamda,deltaxprim))**2
+I2=np.abs(DespectroangularF(image,100*lamda,lamda,deltaxprim))**2
 
 
 plt.figure()
@@ -98,7 +98,7 @@ plt.imshow(I1,cmap="gray")
 plt.figure()
 plt.imshow(I2,cmap="gray")
 plt.figure()
-plt.imshow(np.abs(I1-I2),cmap="gray")
+plt.imshow(np.abs(I1-deltaxprim*I2),cmap="gray")
 plt.show()
 
 
