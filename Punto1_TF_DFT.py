@@ -12,16 +12,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
-def Umatrix(z, w_length, deltax0, deltay0, M,N):
+def Umatrix(z, w_length, dx0, M,N):
     """
     Incident wave and transmittance function
     In this case: plane wave and circular aperture 
     """
     x=np.arange(-M,M)
     y=np.arange(-N,N)
-    x,y=np.meshgrid(x,y)
-    lim=10*w_length*z
-    U_matrix=(deltax0*x)**2 + (deltay0*y)**2
+    X,Y=np.meshgrid(x,y)
+    lim=1*w_length*z
+    U_matrix=(dx0*X)**2 + (dx0*Y)**2
     U_matrix[np.where(U_matrix<=lim)]=1
     U_matrix[np.where(U_matrix>lim)]=0
 
@@ -75,11 +75,11 @@ def Fresnel(Uin, w_l, dx0, z):
         
 w_l=633          #(633nm orange/red) #All units in um
 dx0=2000        #2um
-N=M=int(512/2)
+N=M=(512/2)
 #z=1*N*(dx0**2)/w_l  #Condition of z in FT
 z=33*1e5   #3.2 mm
 #U_0=cv2.imread('cameraman.png',0)
-U_0=Umatrix(z, w_l, dx0, dx0, M, N )
+U_0=Umatrix(z, w_l, dx0, M, N )
 "-----PADDING-----" #If needed 
 """
 width=height=512
@@ -87,12 +87,13 @@ r=int(512/2)
 U_0 = cv2.copyMakeBorder(U_0,r,r,r,r,cv2.BORDER_CONSTANT)"""
 """ FINALIZA PADDING """
 
+
 print (z)
 Uf=Fresnel(U_0, w_l, dx0, z)
 I1=np.log(np.abs((Uf)**2))
 
 plt.figure(1)
-plt.imshow(U_0, extent=[-N,N,-N,N])
+plt.imshow(U_0, cmap='gray')
 
 
 plt.figure(2)
