@@ -32,15 +32,16 @@ def DFT(Uin, dx0, w_l):
     x=np.arange(-N/2,N/2,1)
     y=np.arange(-M/2,M/2,1)
     X,Y=np.meshgrid(x,y)
-    I,J=np.meshgrid(x,y)
+    #I,J=np.meshgrid(x,y)
     dx=w_l*z/(dx0*N)
     #Uf=(dx**2)*Uin*np.exp((-1j*2*np.pi/N)*(I*X+J*Y))
     Uf=np.zeros(np.shape(Uin), dtype=np.complex64)
-    for i in range(-int(N/2),int(N/2) ,1):
+    for i in range(len(X)):
         print (i)
-        for j in range(-int(M/2),int(M/2),1):
-            Uf[i,j]=(dx**2)*np.sum(Uin*np.exp((-1j*2*np.pi/N)*(i*X+j*Y)))
-    return Uf
+        for j in range(len(X)):
+            Uf[i][j]=np.sum(Uin*np.exp((-1j*(2*np.pi/N))*(i*X+j*Y)))
+#    Uf=np.sum(Uin*np.exp((-1j*2*np.pi/N)*(I*X+J*Y)))
+    return Uf*(dx**2)
 
 
 
@@ -59,7 +60,7 @@ def Fresnel(Uin, w_l, dx0, z):
     #X=X*(1/(M*dx0))
     #Y=Y*(1/(N*dx0))
     #Uf=np.fft.fftshift(np.fft.fft2(U1*dx0**2))
-    Uf=DFT(U1*dx0**2, dx0, w_l)
+    Uf=DFT(U1, dx0, w_l)
     Uf=np.fft.fftshift(Uf)
     "-----Step 3-----"
     X=X*dx
@@ -76,8 +77,8 @@ dx0=2000        #2um
 N=M=(512/2)
 #z=1*N*(dx0**2)/w_l  #Condition of z in FT
 z=33*1e5   #3.2 mm
-#U_0=cv2.imread('cameraman.png',0)
-U_0=Umatrix(z, w_l, dx0, M, N )
+U_0=cv2.imread('cameraman.png',0)
+#U_0=Umatrix(z, w_l, dx0, M, N )
 "-----PADDING-----" #If needed 
 """
 width=height=512

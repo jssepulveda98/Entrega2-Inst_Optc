@@ -22,6 +22,7 @@ def DespectroangularF(U,z,lamda,delta):
     k=2*np.pi/lamda
     
     for i in np.arange(len(P)):
+        print (i)
         for j in np.arange(len(Q)):
             A[i,j]=(delta**2)*np.sum(U*np.exp(-1j*(2*np.pi/Mue)*(i*N+j*M)))
             
