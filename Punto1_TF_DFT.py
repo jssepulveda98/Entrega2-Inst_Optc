@@ -32,16 +32,14 @@ def DFT(Uin, dx0, w_l):
     x=np.arange(-N/2,N/2,1)
     y=np.arange(-M/2,M/2,1)
     X,Y=np.meshgrid(x,y)
-    i=np.arange(-N/2,N/2,1)
-    j=np.arange(-M/2,M/2,1)
-    I,J=np.meshgrid(i,j)
+    I,J=np.meshgrid(x,y)
     dx=w_l*z/(dx0*N)
     #Uf=(dx**2)*Uin*np.exp((-1j*2*np.pi/N)*(I*X+J*Y))
-    Uf=0
+    Uf=np.zeros(np.shape(Uin), dtype=np.complex64)
     for i in range(-int(N/2),int(N/2) ,1):
         print (i)
         for j in range(-int(M/2),int(M/2),1):
-            Uf=(dx**2)*Uin*np.exp((-1j*2*np.pi/N)*(i*X+j*Y)) + Uf
+            Uf[i,j]=(dx**2)*np.sum(Uin*np.exp((-1j*2*np.pi/N)*(i*X+j*Y)))
     return Uf
 
 
