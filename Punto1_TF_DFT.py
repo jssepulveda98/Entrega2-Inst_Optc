@@ -13,8 +13,22 @@ import numpy as np
 import cv2
 
 
-def DFT():
-    0
+def DFT(Uin, dx0, w_l):
+    N,M=np.shape(Uin)
+    x=np.arange(-N/2,N/2,1)
+    y=np.arange(-M/2,M/2,1)
+    X,Y=np.meshgrid(x,y)
+    i=np.arange(-N/2,N/2,1)
+    j=np.arange(-M/2,M/2,1)
+    I,J=np.meshgrid(i,j)
+    dx=w_l*z/(dx0*N)
+    Uf=(dx**2)*Uin*np.exp((-1j*2*np.pi/N)*(I*X+J*Y))
+    #Uf=0
+    #for i in range(-int(N/2),int(N/2) ,1):
+    #    print (i)
+    #    for j in range(-int(M/2),int(M/2),1):
+    #        Uf=(dx**2)*Uin*np.exp((-1j*2*np.pi/N)*(i*X+j*Y)) + Uf
+    return Uf
 
 
 
@@ -32,7 +46,9 @@ def Fresnel(Uin, w_l, dx0, z):
     print (dx)
     #X=X*(1/(M*dx0))
     #Y=Y*(1/(N*dx0))
-    Uf=np.fft.fftshift(np.fft.fft2(U1*dx0**2))
+    #Uf=np.fft.fftshift(np.fft.fft2(U1*dx0**2))
+    Uf=DFT(U1*dx0**2, dx0, w_l)
+    Uf=np.fft.fftshift(Uf)
     "-----Step 3-----"
     X=X*dx
     Y=Y*dx
