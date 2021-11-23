@@ -6,6 +6,25 @@ import cv2
 
 
 def DespectroangularF(U,z,lamda,delta):
+    """
+    
+
+    Parameters
+    ----------
+    U : Image
+        The image that will be diffracted.
+    z : Propagation distance
+        
+    lamda : Wave length 
+        
+    delta : Pixel wide
+        
+
+    Returns
+    -------
+    Uz : Diffracted image at Z prop distance
+
+    """
     
     A=np.zeros(np.shape(U),dtype=np.complex64)
     Mue=np.shape(A)[0]
@@ -21,18 +40,22 @@ def DespectroangularF(U,z,lamda,delta):
     
     k=2*np.pi/lamda
     
-    for i in np.arange(len(N)):
+    #DFT
+    
+    for i in np.arange(len(N)): 
         for j in np.arange(len(M)):
             A[i,j]=(delta**2)*np.sum(U*np.exp(-1j*(2*np.pi/Mue)*(i*N+j*M)))
             
             
     A=np.fft.fftshift(A)
     
+    #Prop
     Az=A*np.exp(1j*z*k*((1 - ((lamda*delta_f)**2) *(N**2  +M**2))**0.5))
     
+    #IDFT
     
     Uz=np.zeros(np.shape(U),dtype=np.complex64)
-    for i in np.arange(len(N)):
+    for i in np.arange(len(N)): 
         for j in np.arange(len(M)):
             Uz[i,j]=(delta_f**2)*np.sum(Az*np.exp(1j*(2*np.pi/Mue)*(i*N+j*M)))
             
