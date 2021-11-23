@@ -90,10 +90,10 @@ deltayprim=2.5
 #Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim)
 
 
+#plt.figure()
+#plt.imshow(np.abs(Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim))**2,cmap="gray")
 plt.figure()
-plt.imshow(np.abs(Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim))**2,cmap="gray")
-plt.figure()
-plt.imshow(np.abs(DespectroangularF(image,1000*lamda,lamda,deltaxprim))**2,cmap="gray")
+plt.imshow(np.abs(DespectroangularF(image,2000*lamda,lamda,deltaxprim))**2,cmap="gray")
 plt.show()
 
 
