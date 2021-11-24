@@ -20,7 +20,7 @@ def Umatrix(z, w_length, dx0, M,N):
     x=np.arange(-M,M)
     y=np.arange(-N,N)
     X,Y=np.meshgrid(x,y)
-    lim=1*w_length*z
+    lim=2*w_length*z
     U_matrix=(dx0*X)**2 + (dx0*Y)**2
     U_matrix[np.where(U_matrix<=lim)]=1
     U_matrix[np.where(U_matrix>lim)]=0
@@ -32,14 +32,17 @@ def DFT(Uin, dx0, w_l):
     x=np.arange(-N/2,N/2,1)
     y=np.arange(-M/2,M/2,1)
     X,Y=np.meshgrid(x,y)
-    #I,J=np.meshgrid(x,y)
-    dx=w_l*z/(dx0*N)
+    dx=w_l*z/(dx0*N)        #delta de salida
     #Uf=(dx**2)*Uin*np.exp((-1j*2*np.pi/N)*(I*X+J*Y))
-    Uf=np.zeros(np.shape(Uin), dtype=np.complex64)
+    Uf=np.zeros((N,M), dtype=np.complex64)
+    #Operacion DFT
     for i in range(len(X)):
         print (i)
         for j in range(len(X)):
-            Uf[i][j]=np.sum(Uin*np.exp((-1j*(2*np.pi/N))*(i*X+j*Y)))
+            #Uf[i][j]=np.sum(Uin*np.exp((-1j*(2*np.pi/N))*(i*X+j*Y)))
+            for p in range(len(X)):
+                for q in range(len(X)):
+                    Uf[i][j]=np.sum(Uin[p][q]*np.exp((-1j*(2*np.pi/N))*(i*p+j*q)))+Uf[i][j]
 #    Uf=np.sum(Uin*np.exp((-1j*2*np.pi/N)*(I*X+J*Y)))
     return Uf*(dx**2)
 
@@ -74,11 +77,11 @@ def Fresnel(Uin, w_l, dx0, z):
         
 w_l=633          #(633nm orange/red) #All units in um
 dx0=2000        #2um
-N=M=(512/2)
+N=M=(512/8)
 #z=1*N*(dx0**2)/w_l  #Condition of z in FT
 z=33*1e5   #3.2 mm
-U_0=cv2.imread('cameraman.png',0)
-#U_0=Umatrix(z, w_l, dx0, M, N )
+#U_0=cv2.imread('cameraman.png',0)
+U_0=Umatrix(z, w_l, dx0, M, N )
 "-----PADDING-----" #If needed 
 """
 width=height=512
