@@ -11,17 +11,20 @@ ESQUEMA
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
+import time
 
-def Umatrix(z, w_length, dx0, M,N):
+def Umatrix(z, w_l, dx0, N):
     """
     Incident wave and transmittance function
     In this case: plane wave and circular aperture 
     """
-    x=np.arange(-M,M)
-    y=np.arange(-N,N)
-    X,Y=np.meshgrid(x,y)
-    lim=2*w_length*z
-    U_matrix=(dx0*X)**2 + (dx0*Y)**2
+    dy0=dx0
+    x=np.arange(-N/2,N/2)
+    y=np.arange(-N/2,N/2)
+    x,y=np.meshgrid(x,y)
+    Nzones=8       #Number of Fresnel zones
+    lim=Nzones*w_l*z
+    U_matrix=(dx0*x)**2 + (dy0*y)**2
     U_matrix[np.where(U_matrix<=lim)]=1
     U_matrix[np.where(U_matrix>lim)]=0
 
@@ -39,16 +42,16 @@ def DFT(Uin, dx0, w_l):
     for i in range(len(X)):
         print (i)
         for j in range(len(X)):
-            #Uf[i][j]=np.sum(Uin*np.exp((-1j*(2*np.pi/N))*(i*X+j*Y)))
-            for p in range(len(X)):
-                for q in range(len(X)):
-                    Uf[i][j]=np.sum(Uin[p][q]*np.exp((-1j*(2*np.pi/N))*(i*p+j*q)))+Uf[i][j]
+            Uf[i][j]=np.sum(Uin*np.exp((-1j*(2*np.pi/N))*(i*X+j*Y)))
+            #for p in range(len(X)):
+                #for q in range(len(X)):
+                    #Uf[i][j]=np.sum(Uin[p][q]*np.exp((-1j*(2*np.pi/N))*(i*p+j*q)))+Uf[i][j]
 #    Uf=np.sum(Uin*np.exp((-1j*2*np.pi/N)*(I*X+J*Y)))
     return Uf*(dx**2)
 
 
 
-def Fresnel(Uin, w_l, dx0, z):
+def Fresnel(Uin, w_l, dx0, dx, z):
     "-----Step 1------"
     k=2*np.pi/w_l
     N,M=np.shape(Uin)
@@ -58,8 +61,6 @@ def Fresnel(Uin, w_l, dx0, z):
     phase=np.exp((1j*k)/(2*z)*(((X*dx0)**2) + ((Y*dx0)**2)))
     U1=Uin*phase
     "-----Step 2-----"
-    dx=w_l*z/(dx0*N)
-    print (dx)
     #X=X*(1/(M*dx0))
     #Y=Y*(1/(N*dx0))
     #Uf=np.fft.fftshift(np.fft.fft2(U1*dx0**2))
@@ -75,13 +76,25 @@ def Fresnel(Uin, w_l, dx0, z):
 
 "-----Physical array-----"
         
-w_l=633          #(633nm orange/red) #All units in um
-dx0=2000        #2um
-N=M=(512/8)
-#z=1*N*(dx0**2)/w_l  #Condition of z in FT
-z=33*1e5   #3.2 mm
-#U_0=cv2.imread('cameraman.png',0)
-U_0=Umatrix(z, w_l, dx0, M, N )
+"""
+U=incident wave
+z=entrance plane to detector plane distance
+w_l= wavelentgth
+dx=dy=pixel size detector plane
+dx0=dy0=pixel size entrance plane
+M=number of pixels in the x axis
+N=number of pixels in the y axis
+(M=N)
+MxN=number of pixels
+"""
+        
+w_l=0.633          #(633nm orange/red)   #All units in um
+dx0=2.5            #2.5um
+N=M=256           #Number of pixels
+z=2500            #2.5 mm
+
+tic=time.time()
+
 "-----PADDING-----" #If needed 
 """
 width=height=512
@@ -90,14 +103,33 @@ U_0 = cv2.copyMakeBorder(U_0,r,r,r,r,cv2.BORDER_CONSTANT)"""
 """ FINALIZA PADDING """
 
 
-print (z)
-Uf=Fresnel(U_0, w_l, dx0, z)
-I1=np.log(np.abs((Uf)**2))
+dx=w_l*z/(dx0*N)
+print ("dx:",dx)
+lim=N*(dx0**2)/w_l  #Limit of z in FT
+print ("lim:",lim)
+if z<lim:
+    print("z limit exceeded")
+
+U=Umatrix(z, w_l, dx0, N)
+Uf=Fresnel(U, w_l, dx0, dx, z)
+
+
+I=(np.abs(Uf)**2)                            #Intensity
+angle=np.angle(Uf)                           #Phase
+
+x=N*dx
+y=N*dx
 
 plt.figure(1)
-plt.imshow(U_0, cmap='gray')
-
+plt.imshow(I, extent=[-x,x,-y,y])
 
 plt.figure(2)
-plt.imshow(I1, cmap='gray')
-plt.imsave("TF.png",I1, cmap='gray')
+plt.imshow(I)
+plt.imsave("FresnelInt2.png",I, cmap='gray')
+
+plt.figure(2)
+plt.imshow(angle)
+plt.imsave("FresnelPhase2.png",angle, cmap='gray')
+
+toc=time.time()
+print("time: ",toc-tic," sec")
