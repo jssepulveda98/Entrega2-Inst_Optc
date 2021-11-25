@@ -55,7 +55,7 @@ def Fresnel(Uin, w_l, dx0, dx, z):
 """
 U=incident wave
 z=entrance plane to detector plane distance
-w_l= wavelentgth
+w_l= wavelength
 dx=dy=pixel size detector plane
 dx0=dy0=pixel size entrance plane
 M=number of pixels in the x axis
@@ -103,7 +103,7 @@ plt.figure(2)
 plt.imshow(I)
 plt.imsave("FresnelInt2.png",I, cmap='gray')
 
-plt.figure(2)
+plt.figure(3)
 plt.imshow(angle)
 plt.imsave("FresnelPhase2.png",angle, cmap='gray')
 
