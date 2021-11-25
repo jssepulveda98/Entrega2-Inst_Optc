@@ -22,7 +22,7 @@ def Umatrix(z, w_l, dx0, N):
     x=np.arange(-N/2,N/2)
     y=np.arange(-N/2,N/2)
     x,y=np.meshgrid(x,y)
-    Nzones=8       #Number of Fresnel zones
+    Nzones=10       #Number of Fresnel zones
     lim=Nzones*w_l*z
     U_matrix=(dx0*x)**2 + (dy0*y)**2
     U_matrix[np.where(U_matrix<=lim)]=1
@@ -91,7 +91,7 @@ MxN=number of pixels
 w_l=0.633          #(633nm orange/red)   #All units in um
 dx0=2.5            #2.5um
 N=M=256           #Number of pixels
-z=2500            #2.5 mm
+z=2700            #2.7 mm
 
 tic=time.time()
 
@@ -125,11 +125,11 @@ plt.imshow(I, extent=[-x,x,-y,y])
 
 plt.figure(2)
 plt.imshow(I)
-plt.imsave("FresnelInt2.png",I, cmap='gray')
+plt.imsave("FresnelInt3.png",I, cmap='gray')
 
 plt.figure(2)
 plt.imshow(angle)
-plt.imsave("FresnelPhase2.png",angle, cmap='gray')
+plt.imsave("FresnelPhase3.png",angle, cmap='gray')
 
 toc=time.time()
 print("time: ",toc-tic," sec")
