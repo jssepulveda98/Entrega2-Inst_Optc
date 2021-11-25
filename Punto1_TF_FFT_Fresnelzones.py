@@ -22,7 +22,7 @@ def Umatrix(z, w_l, dx0, N):
     x=np.arange(-N/2,N/2)
     y=np.arange(-N/2,N/2)
     x,y=np.meshgrid(x,y)
-    Nzones=8       #Number of Fresnel zones
+    Nzones=20       #Number of Fresnel zones
     lim=Nzones*w_l*z
     U_matrix=(dx0*x)**2 + (dy0*y)**2
     U_matrix[np.where(U_matrix<=lim)]=1
@@ -65,9 +65,9 @@ MxN=number of pixels
 """
         
 w_l=0.633          #(633nm orange/red)   #All units in um
-dx0=2              #2um
+dx0=2.5            #2.5um
 N=M=2048           #Number of pixels
-z=3500             #2.5 mm
+z=21000             #2.5 mm
 
 tic=time.time()
 
@@ -82,7 +82,8 @@ U_0 = cv2.copyMakeBorder(U_0,r,r,r,r,cv2.BORDER_CONSTANT)"""
 dx=w_l*z/(dx0*N)
 print ("dx:",dx)
 lim=N*(dx0**2)/w_l  #Limit of z in FT
-if z>=lim:
+print ("lim:",lim)
+if z<lim:
     print("z limit exceeded")
 
 U=Umatrix(z, w_l, dx0, N)
@@ -100,11 +101,11 @@ plt.imshow(I, extent=[-x,x,-y,y])
 
 plt.figure(2)
 plt.imshow(I)
-plt.imsave("FresnelInt.png",I, cmap='gray')
+plt.imsave("FresnelInt2.png",I, cmap='gray')
 
 plt.figure(2)
 plt.imshow(angle)
-plt.imsave("FresnelPhase.png",angle, cmap='gray')
+plt.imsave("FresnelPhase2.png",angle, cmap='gray')
 
 toc=time.time()
 print("time: ",toc-tic," sec")

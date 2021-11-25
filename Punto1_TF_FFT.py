@@ -50,9 +50,9 @@ MxN=number of pixels
 """
         
 w_l=0.633          #(633nm orange/red)   #All units in um
-dx0=2              #2um
+dx0=2.5              #2.5um
 N=M=int(512/2)     #Number of pixels
-z=3500             #2.5 mm
+z=5000             #2.5 mm
 U_0=cv2.imread('cameraman.png',0)
 
 tic=time.time()
@@ -68,7 +68,8 @@ U_0 = cv2.copyMakeBorder(U_0,r,r,r,r,cv2.BORDER_CONSTANT)"""
 dx=w_l*z/(dx0*N)
 print ("dx:",dx)
 lim=N*(dx0**2)/w_l  #Limit of z in FT
-if z>=lim:
+print ("lim:",lim)
+if z<lim:
     print("z limit exceeded")
 
 Uf=Fresnel(U_0, w_l, dx0, dx, z)
@@ -85,11 +86,11 @@ plt.imshow(I, extent=[-x,x,-y,y])
 
 plt.figure(2)
 plt.imshow(I)
-plt.imsave("FresnelInt.png",I, cmap='gray')
+plt.imsave("FresnelInt1.png",I, cmap='gray')
 
 plt.figure(2)
 plt.imshow(angle)
-plt.imsave("FresnelPhase.png",angle, cmap='gray')
+plt.imsave("FresnelPhase1.png",angle, cmap='gray')
 
 toc=time.time()
 print("time: ",toc-tic," sec")
