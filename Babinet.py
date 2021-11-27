@@ -21,17 +21,18 @@ def Umatrix(z, w_l, dx0, N):
     dy0=dx0
     x=np.arange(-N/2,N/2)
     y=np.arange(-N/2,N/2)
-    x,y=np.meshgrid(x,y)
-    Nzones=20       #Number of Fresnel zones
+    X,Y=np.meshgrid(x,y)
+    I,J=np.meshgrid(x,y)
+    Nzones=10       #Number of Fresnel zones
     lim=Nzones*w_l*z
-    U_matrix=(dx0*x)**2 + (dy0*y)**2
-    U_complement=U_matrix
+    U_matrix=(dx0*X)**2 + (dy0*Y)**2
+    U_complement=(dx0*I)**2 + (dy0*J)**2
+#    U_complement=U_matrix
     U_matrix[np.where(U_matrix<=lim)]=1
     U_matrix[np.where(U_matrix>lim)]=0
     U_complement[np.where(U_complement<=lim)]=0
     U_complement[np.where(U_complement>lim)]=1
     
-
     return U_matrix, U_complement
 
 "-----Fresnel transform-----"
@@ -82,7 +83,7 @@ print ("lim:",lim)
 if z<lim:
     print("z limit exceeded")
 
-U, U_c=Umatrix(z, w_l, dx0, N)
+U,U_c =Umatrix(z, w_l, dx0, N)
 Uf=Fresnel(U, w_l, dx0, dx, z)
 Uf_c=Fresnel(U_c, w_l, dx0, dx, z)
 
@@ -96,16 +97,24 @@ I3=(np.abs(U_total)**2)
 x=N*dx
 y=N*dx
 
+
 plt.figure(1)
-plt.imshow(I1)
-plt.imsave("FresnelInt2.png",I1, cmap='gray')
+plt.imshow(U, extent=[-x,x,-y,y])
+#plt.imsave("Babinet1.png",Uf, cmap='gray')
 
 plt.figure(2)
-plt.imshow(I2)
-plt.imsave("FresnelInt2.png",I2, cmap='gray')
+plt.imshow(I1)
+#plt.imsave("Babinet2.png",I2, cmap='gray')
 
 plt.figure(3)
-plt.imshow(I3)
-plt.imsave("FresnelInt2.png",I3, cmap='gray')
+plt.imshow(U_c, extent=[-x,x,-y,y])
+#plt.imsave("Babinet1.png",Uf, cmap='gray')
 
+plt.figure(4)
+plt.imshow(I2)
+#plt.imsave("Babinet2.png",I2, cmap='gray')
+
+plt.figure(5)
+plt.imshow(I3)
+#plt.imsave("Babinet3.png",I3, cmap='gray')
 

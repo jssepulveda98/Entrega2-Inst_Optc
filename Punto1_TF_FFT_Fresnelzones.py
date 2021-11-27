@@ -97,7 +97,7 @@ x=N*dx
 y=N*dx
 
 plt.figure(1)
-plt.imshow(I, extent=[-x,x,-y,y])
+plt.imshow(U, extent=[-x,x,-y,y])
 
 plt.figure(2)
 plt.imshow(I)
