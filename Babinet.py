@@ -75,5 +75,37 @@ N=M=2048           #Number of pixels
 z=20500            #20.5 mm
 
 
+dx=w_l*z/(dx0*N)
+print ("dx:",dx)
+lim=N*(dx0**2)/w_l  #Limit of z in FT
+print ("lim:",lim)
+if z<lim:
+    print("z limit exceeded")
+
+U, U_c=Umatrix(z, w_l, dx0, N)
+Uf=Fresnel(U, w_l, dx0, dx, z)
+Uf_c=Fresnel(U_c, w_l, dx0, dx, z)
+
+U_total=Uf+Uf_c
+
+I1=(np.abs(Uf)**2)                            #Intensity
+angle=np.angle(Uf)                           #Phase
+
+I2=(np.abs(Uf_c)**2)
+I3=(np.abs(U_total)**2)
+x=N*dx
+y=N*dx
+
+plt.figure(1)
+plt.imshow(I1)
+plt.imsave("FresnelInt2.png",I1, cmap='gray')
+
+plt.figure(2)
+plt.imshow(I2)
+plt.imsave("FresnelInt2.png",I2, cmap='gray')
+
+plt.figure(3)
+plt.imshow(I3)
+plt.imsave("FresnelInt2.png",I3, cmap='gray')
 
 
