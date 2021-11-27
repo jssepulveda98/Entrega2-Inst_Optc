@@ -99,22 +99,22 @@ y=N*dx
 
 
 plt.figure(1)
-plt.imshow(U, extent=[-x,x,-y,y])
-#plt.imsave("Babinet1.png",Uf, cmap='gray')
+plt.imshow(U, extent=[-x,x,-y,y], cmap='gray')
+plt.imsave("BabinetD1.png",U, cmap='gray')
 
 plt.figure(2)
-plt.imshow(I1)
-#plt.imsave("Babinet2.png",I2, cmap='gray')
+plt.imshow(I1, cmap='gray')
+plt.imsave("DiffD1.png",I1, cmap='gray')
 
 plt.figure(3)
-plt.imshow(U_c, extent=[-x,x,-y,y])
-#plt.imsave("Babinet1.png",Uf, cmap='gray')
+plt.imshow(U_c, extent=[-x,x,-y,y], cmap='gray')
+plt.imsave("BabinetD2.png",U_c, cmap='gray')
 
 plt.figure(4)
-plt.imshow(I2)
-#plt.imsave("Babinet2.png",I2, cmap='gray')
+plt.imshow(I2, cmap='gray')
+plt.imsave("DiffD2.png",I2, cmap='gray')
 
 plt.figure(5)
-plt.imshow(I3)
-#plt.imsave("Babinet3.png",I3, cmap='gray')
+plt.imshow(I3, cmap='gray')
+plt.imsave("BabinetTotal.png",I3, cmap='gray')
 
