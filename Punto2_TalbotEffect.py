@@ -65,7 +65,7 @@ dx0=2.5            #2.5um
 N=M=2048           #Number of pixels
 z=20500            #20.5 mm
 #Diffraction grating parameters
-m=1                #Contrast factor
+m=1000                #Contrast factor
 l=512              #Period
 
 
@@ -91,7 +91,7 @@ y=N*dx
 
 plt.figure(1)
 plt.imshow(U)
-plt.imsave("Diffraction_grating.png",U, cmap='gray')
+plt.imsave("Diffraction_grating.png",U)
 
 plt.figure(2)
 plt.imshow(I)
