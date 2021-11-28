@@ -22,7 +22,7 @@ def transmittance(dx0, N, m, l):
     x=np.arange(-N/2,N/2)
     y=np.arange(-N/2,N/2)
     x,y=np.meshgrid(x,y)
-    t=(1/2)*(1+m*np.cos((2*np.pi*x*dx0)/l))
+    t=(1/2)*(1+(m*np.cos((2*np.pi*x*dx0)/l)))
 
     return t
 
@@ -60,14 +60,15 @@ N=number of pixels in the y axis
 MxN=number of pixels
 """
         
-w_l=0.633          #(633nm orange/red)   #All units in um
+w_l=0.633          #(633nm red)   #All units in um
 dx0=2.5            #2.5um
 N=M=2048           #Number of pixels
-z=20500            #20.5 mm
+#z=20500            #20.5 mm
 #Diffraction grating parameters
-m=1000                #Contrast factor
-l=512              #Period
-
+m=1               #Contrast factor
+l=80              #Period
+z=2*(l**2)/w_l
+print('z:',z)
 
 tic=time.time()
 
@@ -82,6 +83,7 @@ if z<lim:
 U=transmittance(dx0, N, m, l)
 Uf=Fresnel(U, w_l, dx0, dx, z)
 
+I0=(np.abs(U)**2)                            #Intensity
 
 I=(np.abs(Uf)**2)                            #Intensity
 angle=np.angle(Uf)                           #Phase
@@ -90,16 +92,13 @@ x=N*dx
 y=N*dx
 
 plt.figure(1)
-plt.imshow(U)
-plt.imsave("Diffraction_grating.png",U)
+plt.imshow(I0)
+plt.imsave("Diffraction_grating.png",I0, cmap='gray')
 
 plt.figure(2)
 plt.imshow(I)
 plt.imsave("Talbot_effectInt.png",I, cmap='gray')
 
-plt.figure(3)
-plt.imshow(angle)
-plt.imsave("Talbot_effectPhase.png",angle, cmap='gray')
 
 toc=time.time()
 print("time: ",toc-tic," sec")
