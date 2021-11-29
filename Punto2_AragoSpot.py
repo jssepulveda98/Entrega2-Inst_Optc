@@ -14,11 +14,11 @@ def Umatrix(z, w_l, dx0, N):
     x=np.arange(-N/2,N/2)
     y=np.arange(-N/2,N/2)
     x,y=np.meshgrid(x,y)
-    Nzones=15       #Number of Fresnel zones
+    Nzones=7       #Number of Fresnel zones
     lim=Nzones*w_l*z
     U_matrix=(dx0*x)**2 + (dy0*y)**2
-    U_matrix[np.where(U_matrix<=0.2*lim)]=0
-    U_matrix[np.where(U_matrix>0.2*lim)]=1
+    U_matrix[np.where(U_matrix<=1*lim)]=0
+    U_matrix[np.where(U_matrix>1*lim)]=1
     U_matrix2=(dx0*x)**2 + (dy0*y)**2
     U_matrix2[np.where(U_matrix2<=6*lim)]=0
     U_matrix2[np.where(U_matrix2>6*lim)]=1
@@ -83,7 +83,7 @@ def Despectroangular(U,z,lamda,dx0,dy0):
 w_l=0.633          #(633nm orange/red)   #All units in um
 dx0=2.5            #2.5um
 
-N=M=512           #Number of pixels
+N=M=2048           #Number of pixels
 zF=(N*(dx0**2))/w_l +1000           #2.7 mm
 zA=(N*(dx0**2))/w_l -1000
 dx=w_l*zF/(dx0*N)
@@ -94,16 +94,18 @@ y=N*2.5
 
 Ias=np.abs(Despectroangular(Umatrix(zA,w_l,dx0,N),zA,w_l,dx0,dx0))**2
 
-If=np.abs(Fresnel(Umatrix(zF,w_l,dx0,N),w_l,dx0,dx,zF))**2
+#If=np.abs(Fresnel(Umatrix(zF,w_l,dx0,N),w_l,dx0,dx,zF))**2
 
 
 plt.figure()
 plt.imshow(Umatrix(zA,w_l,dx0,N),cmap="gray", extent=[-x,x,-y,y])
+plt.imsave("Aperture.png",Umatrix(zA,w_l,dx0,N), cmap='gray')
 
 plt.figure()
 plt.imshow(Ias,cmap="gray", extent=[-x,x,-y,y])
+plt.imsave("AragoSpot7.png",Ias, cmap='gray')
 
 
-plt.figure()
-plt.imshow(If,cmap="gray", extent=[-x,x,-y,y])
+#plt.figure()
+#plt.imshow(If,cmap="gray", extent=[-x,x,-y,y])
 plt.show()

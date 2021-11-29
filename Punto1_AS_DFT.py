@@ -87,7 +87,7 @@ deltay0=2.5              #2.5um
 deltax=deltax0
 deltay=deltay0
 z=2500                   #2.5 mm
-N=M=256                 #Number of pixels
+N=M=128                 #Number of pixels
 
 tic=time.time()
 
@@ -99,7 +99,7 @@ if z>lim:
 
 U=Umatrix(z, lamda, deltax0, N)
 Uz=DespectroangularDFT(U,z,lamda,deltax0)
-
+toc=time.time()
 #DFT
 I=(np.abs(Uz)**2)                            #Intensity
 angle=np.angle(Uz)                           #Phase
@@ -119,5 +119,5 @@ plt.figure(3)
 plt.imshow(angle)
 plt.imsave("AS_DFT_Phase_Fresnelzones.png",angle, cmap='gray')
 
-toc=time.time()
+
 print("time: ",toc-tic," sec")

@@ -5,6 +5,22 @@ import time
 
 #Functions
 
+def Umatrix(z, lamda, deltax0, N):
+    """
+    Incident wave and transmittance function
+    In this case: plane wave and circular aperture 
+    """
+    deltay0=deltax0
+    x=np.arange(-N/2,N/2)
+    y=np.arange(-N/2,N/2)
+    x,y=np.meshgrid(x,y)
+    Nzones=5       #Number of Fresnel zones
+    lim=Nzones*lamda*z
+    U_matrix=(deltax0*x)**2 + (deltay0*y)**2
+    U_matrix[np.where(U_matrix<=lim)]=1
+    U_matrix[np.where(U_matrix>lim)]=0
+
+    return U_matrix
 
 def DespectroangularDFT(U,z,lamda,delta):
     """
@@ -98,9 +114,9 @@ deltay0=2.5              #2.5um
 deltax=deltax0
 deltay=deltay0
 z=900                   #0.9 mm
-N=M=int(200/2)     #Number of pixels
+N=M=int(256/2)     #Number of pixels
 
-tic=time.time()
+
 
 lim=N*(deltax0**2)/lamda  #Limit of z in Angular Spectrum
 print ("lim:",lim)
@@ -113,10 +129,19 @@ image=cv2.imread("totoro.png",0)
 
 
 #Despectroangular(image,1000*lamda,lamda,deltaxprim,deltayprim)
+U=Umatrix(z, lamda, deltax0, N)
 
-Uz=Despectroangular(image,z,lamda,deltax0,deltay0)
-UzDFT=DespectroangularDFT(image,z,lamda,deltax0)
+tic=time.time()
+Uz=Despectroangular(U,z,lamda,deltax0,deltay0)
+toc=time.time()
 
+Tfft=toc-tic
+
+tic=time.time()
+UzDFT=DespectroangularDFT(U,z,lamda,deltax0)
+toc=time.time()
+
+Tdft=toc-tic
 #FFT
 I=(np.abs(Uz)**2)                            #Intensity
 angle=np.angle(Uz)                           #Phase
@@ -148,8 +173,9 @@ plt.imshow(angledft)
 plt.imsave("AS_FFT_PhaseDFT.png",angledft, cmap='gray')
 
 
-toc=time.time()
-print("time: ",toc-tic," sec")
+
+print("time: ",Tdft/Tfft," sec")
+print("Pixels: ",2*N)
 
 # plt.figure()
 # plt.imshow(np.abs(I1-deltaxprim*I2),cmap="gray")
