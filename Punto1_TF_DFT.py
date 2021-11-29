@@ -91,7 +91,7 @@ MxN=number of pixels
 w_l=0.633          #(633nm orange/red)   #All units in um
 dx0=2.5            #2.5um
 N=M=256           #Number of pixels
-z=2700            #2.7 mm
+z=2600            #2.7 mm
 
 tic=time.time()
 

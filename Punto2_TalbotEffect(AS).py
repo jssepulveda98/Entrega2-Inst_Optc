@@ -62,11 +62,13 @@ deltax0=2.5              #2.5um
 deltay0=2.5              #2.5um
 deltax=deltax0
 deltay=deltay0
-z=2500                   #2.5 mm
+#z=2500                   #2.5 mm
 N=M=2048                 #Number of pixels
 #Diffraction grating parameters
-m=1                #Contrast factor
-l=512              #Period
+m=1               #Contrast factor
+l=80              #Period
+z=3*(l**2)/lamda
+print('z:',z)
 
 tic=time.time()
 
@@ -79,7 +81,8 @@ if z>lim:
 U=transmittance(deltax0, N, m, l)
 Uz=Despectroangular(U,z,lamda,deltax0,deltay0)
 
-#FFT
+I0=(np.abs(U)**2)                            #Intensity
+
 I=(np.abs(Uz)**2)                            #Intensity
 angle=np.angle(Uz)                           #Phase
 
@@ -88,15 +91,13 @@ x=N*deltax
 y=N*deltay
 
 plt.figure(1)
-plt.imshow(I, extent=[-x,x,-y,y])
+plt.imshow(I0)
+plt.imsave("Diffraction_grating(AS).png",I0, cmap='gray')
 
 plt.figure(2)
 plt.imshow(I)
-plt.imsave("AS_FFT_Int_Fresnelzones.png",I, cmap='gray')
+plt.imsave("Talbot_effectInt(AS).png",I, cmap='gray')
 
-plt.figure(3)
-plt.imshow(angle)
-plt.imsave("AS_FFT_Phase_Fresnelzones.png",angle, cmap='gray')
 
 toc=time.time()
 print("time: ",toc-tic," sec")
