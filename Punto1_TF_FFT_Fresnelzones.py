@@ -22,7 +22,7 @@ def Umatrix(z, w_l, dx0, N):
     x=np.arange(-N/2,N/2)
     y=np.arange(-N/2,N/2)
     x,y=np.meshgrid(x,y)
-    Nzones=20       #Number of Fresnel zones
+    Nzones=10       #Number of Fresnel zones
     lim=Nzones*w_l*z
     U_matrix=(dx0*x)**2 + (dy0*y)**2
     U_matrix[np.where(U_matrix<=lim)]=1
@@ -66,8 +66,8 @@ MxN=number of pixels
         
 w_l=0.633          #(633nm orange/red)   #All units in um
 dx0=2.5            #2.5um
-N=M=2048           #Number of pixels
-z=20500            #20.5 mm
+N=M=256           #Number of pixels
+z=2600            #2.6 mm
 
 tic=time.time()
 
